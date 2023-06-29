@@ -1,0 +1,194 @@
+chmod u --> user
+chmod g -->  grupo
+chmod o --> otros
+
+chmod u+r+w+x --> todos los permisos
+chmod u-r-w-x --> ningun permiso
+
+sudo chown -R usuario directorio
+chown --> cambia el dueño.
+
+chgrp --> permite cambiar el grupo.
+chgrp grupo directorio
+
+sudo more /etc/group
+sudo more /etc/passwd
+sudo more /etc/shadow 
+
+groupadd nombreGrupo
+sudo useradd -m -s /bin/bash -c “Usuario de prueba” -g users -G grupoSecundario prueba
+sudo userdel nombreUser
+
+LVM -------------------------------------------------------
+Creamos las particiones 
+CREAR LAS PARTICIONES DEL TAMAÑO QUE NECESITEN LOS LVM
+
+sudo pvcreate /dev/sdb1 /dev/sdc1 /dev/sdd1 --> creacion de los volumenes fisicos donde le indicamos las particiones
+sudo pvs vemos 
+lvremove
+
+sudo vgcreate nombrevg /dev/particion /dev/particion --> crear un grupo con las particiones
+sudo vgs lo ves
+vgremove
+vgextend vg01 /dev/sdb1
+
+
+sudo lvcreate -l +100%FREE -n lvNombre vgNombre --> Si queremos usar todo el espacio
+sudo lvcreate -L +1G -n lvNombre vgNombre --> Si quiero asignar un pedazo en particular
+sudo lvs para ver 
+pvremove
+
+formatear particiones logicas creadas en ext4
+sudo mkfs.ext4 /dev/vg01/lvm1 
+
+ya formateadas 
+mount /dev/vg01/lvm1 /directorio
+
+df -h muestra los espacios
+
+sudo resize2fs /dev/vg01/lvm1
+
+
+------------------------------------------------------------
+
+sudo apt install tree --> instalar tree
+¡NO PUEDO FORMATEAR UNA EXTENDIDA!
+Al formatear una PARTICIÓN LÓGICA se hace con: sudo mkfs.ext2 /dev/nombreParticion
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+mkdir -p 
+* Eliminar un directorio: rm -r nombreDirectorio.
+
+ whoami   --USUARIO
+free -h   --RAM
+Lscpu     --CPU
+
+Distinto directorios guardar información:
+
+# lsblk  > /ruta/archivo.txt = Guardo informacion de mis discos.
+
+# cp rutaCopiar rutaDestino --> Se copia el de la primera ruta en la segunda
+
+# mv Archivo/Directorio  Archivo/Directorio --> Puede cambiar el nombre y mover el archivo --> Si el segundo nombre que escribimos no existe simplemente cambiamos el nombre 
+|-> si el segundo que escribimos existe lo que va a hacer es mover el primero adentro del segundo. --> mv --backup crea un backUp antes de moverlo.
+
+# echo > ruta -> Crea un txt
+
+# cat Archivo.txt > Archivo.txt -->  Copio el contenido del txt en otro.
+
+# cat /proc/cpuinfo > /ruta/archivo.txt = Guardo informacion del CPU
+
+# cat /proc/meminfo > archivo.txt = guardo informacion de la memoria
+
+# cat /sys/class/net/*/address > /ruta/archivo.txt = Guardo informacion de la IP.
+
+# ls -la /opt > ruta --> Guarda la lista de archivos de opt. en el txt de la ruta
+
+# ifconfig -a Con esta opción podrás ver todas las interfaces de red disponibles en tu sistema, 
+independientemente de que estén en uso o no, junto con sus parámetros básicos.
+
+
+# uname -a > /ruta/archivo.txt = Guardo informacion de mi sistema operativo.
+
+# hostnamectl > rutaAchivo.txt --> Guardo + infor del sistema operativo.
+
+# lsb_release -a Muestra datos de la distribucion y su version
+
+
+#Comandos para mostrar información de Hardware
+
+# sudo dmidecode    #Muestra toda la información de Hardware del equipo... 
+# lshw -short  #Muestra el hardware chill
+
+
+#Comando df   (Ver información de los dispositivos de bloque montados, sus puntos de montaje, tamaño y uso)
+df  -h                                 #Muestra dicha info para todos los sistemas de archivo montados
+df -h /mnt/disco2            #Muestra la informacion solo para el sistema de archivos montado en /mnt/disco2
+
+
+#Conocer cuanto pesa un archivo
+sudo du -sh /var/log/   #Muestra el tamaño Total ( -s   suma los tamaños) de los logs del S.O.  (como algunas carpetas dentro de /var/log/ solo son accesibles por root, se agrega "sudo" adelante)
+du -hd2 $HOME    #Muestra el detalle de los tamaños del Home del usuario hasta 2 niveles ( -d2 )  
+
+
+#Mostrar información sobre dispositivos de bloques
+lsblk   -f     #Lo mismo pero se ve mejor
+----------------------------------------------------------------------------------------------------------------------------
+
+COMANDOS BASICOS:
+	* man man = intrucciones de comandos
+	* man <comando> = muestra la instrucciones del tipo de comando escrito
+	* pwd = muestra donde estamos parados
+	* man ls = muestra los variantes y tipos de comandos parte de ls
+	* ls -d  muestra solo los directorios
+	* ls * muestra directorios y subdirectorios
+	* ls -R para listar todos los archivos y directorios con sus subdirectorios correspondientes hasta el último archivo:
+	* ls -s (la s es minúscula) para listar archivos o directorios con sus tamaños:
+	* ls -l para listar el contenido del directorio en un formato de tabla con columnas incluidas
+	* ls -lh para listar los archivos o directorios en el mismo formato de tabla anterior, pero con otra columna que represente el tamaño de cada archivo/directorio
+	* ls -a para listar archivos o directorios, incluidos archivos o directorios ocultos. En Linux, cualquier cosa que comience con un . se considera un archivo oculto
+	* ls -l -a o ls -a -l o ls -la o ls -al para listar archivos o directorios en un formato de tabla con información adicional, incluidos archivos o directorios ocultos
+	* ls -S (la S es mayúscula) para listar archivos o directorios y ordenar por tamaño en orden descendente (de mayor a menor).También puedes agregar un indicador -r para invertir el orden de clasificación de la siguiente manera: ls -Sr
+
+DIRECTORIOS Y SUBDIRECTORIOS:
+	* cd . = es referencia donde estamos 
+	* cd .. = nos vamos en un subdirectorio padre
+	* cd / = directorio home
+	* ~$ = que estamos en nuestro home (nuestro usuario)
+	* /$ = directorio root
+	* mkdir <nombreCarpeta> = crea un directorio
+	* rmdir  --> elimina un directorio.
+	* tree = Instalar el tree (?)
+
+MANEJO DE ARCHIVOS:
+	* echo <menssage> = devuelve un mensaje en la consola
+	* echo "algo" > nombre.txt = crea un archivo.txt
+	* vi nombre.txt = Me deja editar un archivo.
+	* history = muestra todos los comandos ingresados
+	* cat = contatena, y lo muestra en consola
+	* less/more = muestra el texto contenido
+	* tail = muestra los ultimos renglones del texto
+	* head = muestra los primeros renglos del texto
+	* bg = Muestra los procesos corriendo
+	* fg = Finaliza esos procesos.
+	* cp = Copiar archivos: cp archivoACopiar.txt  /rutaDondeLoPegare
+
+USO DE DISCO RIGIDOS:
+	* lsblk = Muestra en formato de arbol las particiones de nuestro disco rigido.
+	* cd /dev/ = me lleva a dispositivos de mi SO.
+
+	Crear el disco rigido:
+	* (1) sudo fdisk /dev/nombreDisco = Me deja activar un disco
+	* (2) m = Muestra un menu.
+	* (3) n = Creo nueva particion, enter, enter... 
+		PARTICIONES DE UN DISCO RIGIDO:
+		-> p = Creo una particion PRIMARIA
+		       En Last sector le pongo el tamaño que quiero: +XGB/M
+		-> e = Creo una particion EXTENDIDA, normalmente ocupa todo lo restante
+			del disco rigido.
+		-> l = Creo una particion LOGICA, unicamente se crea si hay una 
+			particion EXTENDIDA.
+	* d = Elimino una particion.	
+	* (4) w = Guardo esa configuracion.
+	* (5) sudo mkfs /dev/nombreDisco1 = Formateo el disco.
+	* (6) sudo mount /dev/nombreDisco1 <nombreSubdirectorio> = Me permite montar un disco.	
+	*  sudo umount /dev/nombreDisco1 : desmonta un filesystem/disco
+	* df -h /dev/nombreDisco1 = (Ver información de los dispositivos de bloque montados, sus puntos de montaje, tamaño y uso)
+
+
+
+
+
+
+
+
+#editar para dejar montajes permanentes
+vim /etc/fstab
+
+#Una forma de dejar a groso modo toda la info y despues editar el fstab para cambiar los espacios por tabs...
+ls -l /dev/disk/by-uuid/ |grep sdb2 |awk '{print "UUID="$9  "/tmp/lala/ ext4  default  0 0"}' >> /etc/fstab
+
+#una vez escrito el archivo ejecutar
+mount -a
+---------------------------------------------------------------------------------------------------------------------------------------------------

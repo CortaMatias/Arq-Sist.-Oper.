@@ -1,0 +1,115 @@
+
+LVM
+------------------------------------
+1) CREAR DISCOS VIRTUAL BOX
+2) CREAR PARTICIONES CON SUDO FDISK /DEV/SDB (EL NUMERO DEPENDE), OPCION N -> P O E -> W
+3) CAMBIAMOS EL TIPO DE PARTICION CON SUDO FDISL /DEV/SDB , OPCION T -> W
+4) CREAMOS VOLUMENES FISICOS (PVCREATE)
+5) CREAR GRUPO DE VOLUMENES (VGCREATE)
+6) CREAMOS VOLUMENES LOGICOS (LVCREATE)
+7) FORMATEAMOS (EXT4)
+8) MONTAMOS EN CARPETA/DIR (MOUNT)
+-------------------
+9) EXPANDIR UN GRUPO DE VOLUMEN (VGEXTEND)
+10) EXPANDIR UN VOLUMEN LOGICO (LVEXTEND + RESIZE2FS)
+
+sudo fdisk -l : VEMOS LAS PARTICIONES
+sudo pvcreate /DEV/SDB1 /DEV/SDB2 ...
+sudo pvs O pvdisplay: VER VOLUMENES FISICOS
+sudo vgcreate NOMBRE /DEV/SDB1
+sudo vgs O vgdisplay : VER GRUPO DE VOLUMENES
+sudo lvcreate -L +TamañoMB -n lvww vg01 -> tamaño particular
+sudo lvcreate -l +100%FREE -n lvdb vg02 -> todo el volumen
+sudo lvs : ver volumenes logicos
+sudo mkfs.ext4 /dev/"volumen_group"/"volumen_logico"
+
+useradd -m -s /bin/bash -c “Comentario” -g users nombreUsuario
+
+sudo mount /dev/"volumen_group"/"volumen_logico" "directorio de montaje"
+DESPUES DE MONTAR VERIFICAR ls -l /home/
+Y cambiar el dueño y el grupo del directorio y la ACCESIBILIDAD 750 
+chmod 750 "Archivo" , representa el permiso de ejecución./ --> PARA LOS DIRECTORIOS USUARIOS
+ASIGNAR DUEñO -> chown alumnos archivo01.txt
+ASIGNAR GRUPO -> chgrp users archivo01.txt
+
+
+sudo vgextend "volumen_group" /dev/sdb2
+sudo lvextend -L +20MB /dev/vg01/lv01
+sudo lvextend -l +100%FREE /dev/vg01/lv01
+
+sudo df -h : verificar espacios
+sudo resize2fs /dev/vg/lvm1
+
+lvremove → Borra un lv, hay que desmontarlo primero.
+vgremove → Borra un vg.
+pvremove → Borra un pv.
+
+
+USUARIOS Y PERMISOS
+---------------------------------
+
+ls -l , ver permisos del archivos
+
+QUITAR USUARIO DE UN GRUPO -> sudo deluser nombreUsuario nombreGrupo
+
+PERMISOS
+dueño - grupo - resto usuarios 
+Lectura (r) Escritura (w) Ejecución (x)
+7 r w x
+6 r w -
+5 r - x
+4 r - -
+3 - w x
+2 - w -
+1 - - x
+0 - - -
+
+VER USUARIOS ->
+# cat /etc/passwd -> MOSTRAR 
+# cat /etc/shadow
+# cat /etc/group
+
+CREAR USUARIO -> useradd -m -s /bin/bash -c “Comentario” -g users nombreUsuario (g grupo principal, -G grupos secundarios)
+
+BORRAR USUARIOS
+# userdel prueba -> PARA BORRAR SOLO USUARIOS
+# userdel -r prueba2 -> PARA BORRAR USUARIO Y ARCHIVOS
+
+MODIFICAR USUARIO -> usermod -s /bin/false -c “Comentario” nombreUsuario
+CAMBIAR DE USUARIO -> su nombreUsuario
+CREAR CONTRASEñA USUARIO -> passwd nombreUsuario
+
+AGREGAR USUARIO A GRUPO -> sudo usermod -G secundario usuarioNombre
+
+CREAR GRUPO -> groupadd nombreGrupo
+CREAR GRUPO CON USUARIO -> usermod -G nombreGrupo -a nombreUsuario
+VER GRUPOS -> grep nombreGrupo /etc/group
+BORRAR GRUPO -> groupdel
+
+
+PAQUETES
+---------------------------
+
+#Debian y derivados
+apt -> apt-get -> aptitude -> apt (version nueva)  
+
+apt update                      (actualiza la lista de paquetes disponibles para instalar)
+apt seach paquete        (busca si esta disponible para instalar el paquete   "paquete") 
+apt install paquete        (Instala el paquete)
+apt upgrade                    (actualiza el SO y todos los paquetes instalados)
+apt list --installed          (muestra lista de paquetes instalados)
+
+#RedHat y derivados
+rpm -> yum -> dnf
+dnf search     paquete        (busca si esta disponible para instalar el paquete   "paquete") 
+dnf install paquete             (Instala el paquete)
+dnf update                          (actualiza el SO y todos los paquetes instalados)
+dnf list installed                 (muestra lista de paquetes instalados)
+
+#--------------------- Ubicación de repositorios -------------------#
+#Debian y derivados
+/etc/apt/sources.list   o /etc/apt/sources.list.d/
+
+#RedHat y derivados
+/etc/yum.repos.d/
+
